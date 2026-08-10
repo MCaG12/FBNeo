@@ -121,6 +121,11 @@ static LRESULT CALLBACK MenuHook(INT32 nCode, WPARAM wParam, LPARAM lParam)
 							if (NULL == h2ndMenu)
 								continue;
 
+							MENUINFO mi = { sizeof(mi) };
+							mi.fMask = MIM_BACKGROUND;
+							mi.hbrBack = CreateSolidBrush(RGB(0,255,0));
+							SetMenuInfo(h2ndMenu, &mi);
+
 							const INT32 n2ndcnt = GetMenuItemCount(h2ndMenu);
 
 							if (!GetMenuItemRect(NULL, h2ndMenu, n2ndcnt - 1, &subitemRect))
@@ -142,6 +147,11 @@ static LRESULT CALLBACK MenuHook(INT32 nCode, WPARAM wParam, LPARAM lParam)
 								HMENU h3rdMenu = GetSubMenu(h2ndMenu, k);
 								if (NULL == h3rdMenu)
 									continue;
+
+								MENUINFO miTest = { sizeof(miTest) };
+								miTest.fMask = MIM_BACKGROUND;
+								miTest.hbrBack = CreateSolidBrush(RGB(0,0,255));
+								SetMenuInfo(h3rdMenu, &miTest);
 
 								const INT32 n3rdcnt = GetMenuItemCount(h3rdMenu);
 
@@ -205,9 +215,19 @@ void DisplayPopupMenu(int nMenu)
 		RECT clientRect;
 		RECT buttonRect;
 
+		MENUINFO mi = { 0 };
+		mi.cbSize = sizeof(MENUINFO);
+		mi.fMask = MIM_BACKGROUND;
+		mi.hbrBack = CreateSolidBrush(RGB(255, 0, 0)); // red background
+		mi.dwStyle = MNS_NOCHECK;
+	
+		SetMenuInfo(hPopupMenu, &mi);
+
 		nLastMenu         = nMenu;
 		nRecursions       = 0;
 		nCurrentItemFlags = 0;
+
+		SetClassLongPtr(hMenubar, GCLP_HBRBACKGROUND, (LONG_PTR)CreateSolidBrush(RGB(255, 0, 0)));
 
 		GetWindowRect(hMenubar, &clientRect);
 		SendMessage(hMenubar, TB_GETITEMRECT, nMenu, (LPARAM)&buttonRect);

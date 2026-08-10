@@ -41,6 +41,7 @@ void DisplayPopupMenu(int nMenu);
 // Double-clicking the titlebar, or clicking the Maximize button on titlebar
 // can also be problematic, sometimes creating a window that is too wide.
 
+typedef HRESULT (WINAPI *SetWindowThemeFn)(HWND, LPCWSTR, LPCWSTR);
 static HBITMAP hBezelBitmap = NULL;
 static int nBezelCacheX = 0;
 static int nBezelCacheY = 0;
@@ -2750,6 +2751,11 @@ static void OnCommand(HWND /*hDlg*/, int id, HWND /*hwndCtl*/, UINT codeNotify)
 			POST_INITIALISE_MESSAGE;
 			break;
 
+		case MENU_DEFAULT_DARK_MODE:
+			ApplyDarkMode();
+			POST_INITIALISE_MESSAGE;
+			break;	
+
 		case MENU_LANGUAGE_SELECT:
 			if (UseDialogs()) {
 				FBALocaliseLoadTemplate();
@@ -4263,6 +4269,7 @@ int ScrnTitle()
 // Init the screen window (create it)
 int ScrnInit()
 {
+
 	REBARINFO rebarInfo;
 	REBARBANDINFO rebarBandInfo;
 	RECT rect;
@@ -4292,6 +4299,9 @@ int ScrnInit()
 		0, 0, 0, 0,									   			// size of window
 		NULL, NULL, hAppInst, NULL);
 
+	SetClassLongPtr(hScrnWnd, GCLP_HBRBACKGROUND, (LONG_PTR)(CreateSolidBrush(RGB(0, 255, 0))));	
+	//hScrnWnd.hbrBackground = (HBRUSH)(CreateSolidBrush(RGB(0, 255, 0)));	
+
 	if (hScrnWnd == NULL) {
 		ScrnExit();
 		return 1;
@@ -4312,22 +4322,37 @@ int ScrnInit()
 				0, 0, 0, 0,
 				hScrnWnd, NULL, hAppInst, NULL);
 
+			HMODULE hUxTheme = LoadLibrary(L"uxtheme.dll");
+			if (hUxTheme) {
+				SetWindowThemeFn pSetWindowTheme = 
+					(SetWindowThemeFn)GetProcAddress(hUxTheme, "SetWindowTheme");
+				if (pSetWindowTheme) {
+					pSetWindowTheme(hRebar, L"", L"");
+				}
+				FreeLibrary(hUxTheme);
+			}
+
+
 			rebarInfo.cbSize = sizeof(REBARINFO);
 			rebarInfo.fMask = 0;
 			rebarInfo.himl = NULL;
 
 			SendMessage(hRebar, RB_SETBARINFO, 0, (LPARAM)&rebarInfo);
 
-			// Add the menu toolbar to the rebar
+			//SendMessage(hRebar, RB_SETBKCOLOR, 0, (LPARAM)RGB(0, 255, 0));
+
+			//Add the menu toolbar to the rebar
 			GetWindowRect(hMenubar, &rect);
 
 			rebarBandInfo.cbSize		= sizeof(REBARBANDINFO);
-			rebarBandInfo.fMask			= RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_STYLE;// | RBBIM_BACKGROUND;
+			rebarBandInfo.fMask			= RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_STYLE | RBBIM_COLORS;// | RBBIM_BACKGROUND;
 			rebarBandInfo.fStyle		= 0;//RBBS_GRIPPERALWAYS;// | RBBS_FIXEDBMP;
 			rebarBandInfo.hwndChild		= hMenubar;
 			rebarBandInfo.cxMinChild	= 100;
 			rebarBandInfo.cyMinChild	= ((SendMessage(hMenubar, TB_GETBUTTONSIZE, 0, 0)) >> 16) + 1;
 			rebarBandInfo.cx			= rect.right - rect.left;
+		    rebarBandInfo.clrFore    = RGB(0, 0, 0);
+    		rebarBandInfo.clrBack    = uiBackGroundColor;
 
 			SendMessage(hRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rebarBandInfo);
 

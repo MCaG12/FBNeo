@@ -24,3 +24,11 @@ nvram
 *.nvr
 config/*
 fbneo.dat
+fbneo64d.exe
+fbneo64ds.exe
+zzBurnDebug.html
+.idea/editor.xml
+.idea/vcs.xml
+.idea/misc.xml
+.idea/workspace.xml
+.gitignore

@@ -1,5 +1,7 @@
 #include "burner.h"
 
+UINT uiBackGroundColor = 0xFFFFFF;
+
 static void MakeOfn()
 {
 	memset(&ofn, 0, sizeof(ofn));
@@ -40,4 +42,9 @@ int SelectPlaceHolder()
 void ResetPlaceHolder()
 {
 	szPlaceHolder[0] = _T('\0');
+}
+
+void ApplyDarkMode()
+{
+	uiBackGroundColor = 0x262626;
 }

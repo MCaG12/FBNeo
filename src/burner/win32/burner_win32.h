@@ -380,6 +380,7 @@ extern bool bIconsOnlyParents;
 extern int nIconsSize, nIconsSizeXY, nIconsYDiff;
 extern bool bGameInfoOpen;
 extern bool bIconsByHardwares;
+extern UINT uiBackGroundColor;
 
 extern HICON* pIconsCache;
 
@@ -652,6 +653,7 @@ int ChooseMonitorCreate();
 // placeholder.cpp
 int SelectPlaceHolder();
 void ResetPlaceHolder();
+void ApplyDarkMode();
 
 // Misc
 #define _TtoA(a)	TCHARToANSI(a, NULL, 0)
