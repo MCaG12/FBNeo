@@ -579,6 +579,48 @@ static LRESULT CALLBACK ScrnProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lPar
 			}
 			break;
 		}
+
+		case WM_MEASUREITEM:
+		{
+			LPMEASUREITEMSTRUCT pmis = (LPMEASUREITEMSTRUCT)lParam;
+			if (pmis->CtlType == ODT_MENU) {
+				pmis->itemWidth  = 150; 
+				pmis->itemHeight = 20;  
+			}
+			return TRUE;
+		}
+		
+		// doing a drawItem case to control the shading of the selected item
+		case WM_DRAWITEM:
+		{
+			LPDRAWITEMSTRUCT pdis = (LPDRAWITEMSTRUCT)lParam;
+			if (pdis->CtlType == ODT_MENU) {
+				BOOL bSelected = (pdis->itemState & ODS_SELECTED) != 0;
+				BOOL bChecked  = (pdis->itemState & ODS_CHECKED)  != 0;
+
+				COLORREF clr;
+				if (bSelected)
+					clr = RGB(180, 0, 0);   // hover
+				else if (bChecked)
+					clr = RGB(120, 0, 0);   // checked/active item, idle
+				else
+					clr = RGB(255, 0, 0);   // normal idle
+
+				HBRUSH hbr = CreateSolidBrush(clr);
+				FillRect(pdis->hDC, &pdis->rcItem, hbr);
+				DeleteObject(hbr);
+
+				SetBkMode(pdis->hDC, TRANSPARENT);
+				SetTextColor(pdis->hDC, RGB(255,255,255));
+
+				TCHAR* pszText = (TCHAR*)pdis->itemData;
+				if (pszText) {
+					DrawText(pdis->hDC, pszText, -1, &pdis->rcItem,
+							DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+				}
+			}
+			return TRUE;
+		}
 		// - dink - end
 		HANDLE_MSG(hWnd, WM_SIZE,			OnSize);
 		HANDLE_MSG(hWnd, WM_ENTERSIZEMOVE,	OnEnterSizeMove);

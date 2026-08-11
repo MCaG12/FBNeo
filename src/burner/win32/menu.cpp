@@ -52,6 +52,37 @@ static INT32 GetCurrentMonitorHigh() {
 	return monitorInfo.rcMonitor.bottom;
 }
 
+void ApplyMenuBackground(HMENU hMenu, HBRUSH hbr)
+{
+    MENUINFO mi = { sizeof(MENUINFO) };
+    mi.fMask   = MIM_BACKGROUND;
+    mi.hbrBack = hbr;
+    SetMenuInfo(hMenu, &mi);
+
+    int count = GetMenuItemCount(hMenu);
+    for (int i = 0; i < count; i++) {
+        MENUITEMINFO mii = { sizeof(MENUITEMINFO) };
+        mii.fMask = MIIM_FTYPE | MIIM_DATA;
+        GetMenuItemInfo(hMenu, i, TRUE, &mii); 
+
+        TCHAR szText[256] = { 0 };
+        MENUITEMINFO miiText = { sizeof(MENUITEMINFO) };
+        miiText.fMask = MIIM_STRING;
+        miiText.dwTypeData = szText;
+        miiText.cch = 256;
+        GetMenuItemInfo(hMenu, i, TRUE, &miiText);
+
+        mii.fType    |= MFT_OWNERDRAW;
+        mii.dwItemData = (ULONG_PTR)_tcsdup(szText); 
+        SetMenuItemInfo(hMenu, i, TRUE, &mii);
+
+        HMENU hSub = GetSubMenu(hMenu, i);
+        if (hSub) {
+            ApplyMenuBackground(hSub, hbr);
+        }
+    }
+}
+
 static LRESULT CALLBACK MenuHook(INT32 nCode, WPARAM wParam, LPARAM lParam)
 {
 	switch (((MSG*)lParam)->message) {
@@ -121,11 +152,6 @@ static LRESULT CALLBACK MenuHook(INT32 nCode, WPARAM wParam, LPARAM lParam)
 							if (NULL == h2ndMenu)
 								continue;
 
-							MENUINFO mi = { sizeof(mi) };
-							mi.fMask = MIM_BACKGROUND;
-							mi.hbrBack = CreateSolidBrush(RGB(0,255,0));
-							SetMenuInfo(h2ndMenu, &mi);
-
 							const INT32 n2ndcnt = GetMenuItemCount(h2ndMenu);
 
 							if (!GetMenuItemRect(NULL, h2ndMenu, n2ndcnt - 1, &subitemRect))
@@ -147,11 +173,6 @@ static LRESULT CALLBACK MenuHook(INT32 nCode, WPARAM wParam, LPARAM lParam)
 								HMENU h3rdMenu = GetSubMenu(h2ndMenu, k);
 								if (NULL == h3rdMenu)
 									continue;
-
-								MENUINFO miTest = { sizeof(miTest) };
-								miTest.fMask = MIM_BACKGROUND;
-								miTest.hbrBack = CreateSolidBrush(RGB(0,0,255));
-								SetMenuInfo(h3rdMenu, &miTest);
 
 								const INT32 n3rdcnt = GetMenuItemCount(h3rdMenu);
 
@@ -215,13 +236,9 @@ void DisplayPopupMenu(int nMenu)
 		RECT clientRect;
 		RECT buttonRect;
 
-		MENUINFO mi = { 0 };
-		mi.cbSize = sizeof(MENUINFO);
-		mi.fMask = MIM_BACKGROUND;
-		mi.hbrBack = CreateSolidBrush(RGB(255, 0, 0)); // red background
-		mi.dwStyle = MNS_NOCHECK;
-	
-		SetMenuInfo(hPopupMenu, &mi);
+		HBRUSH hbrRed = CreateSolidBrush(RGB(0, 255, 0));
+
+		ApplyMenuBackground(hPopupMenu, hbrRed);
 
 		nLastMenu         = nMenu;
 		nRecursions       = 0;
