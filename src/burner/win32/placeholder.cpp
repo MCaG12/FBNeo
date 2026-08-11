@@ -1,6 +1,9 @@
 #include "burner.h"
 
 UINT uiBackGroundColor = 0xFFFFFF;
+UINT uiMenuItemColor   = 0xf4f4f4;
+UINT uiSelectedMenuItemColor = 0x9fc5e8;
+UINT uiTextFontColor = 0x000000;
 
 static void MakeOfn()
 {
@@ -47,4 +50,6 @@ void ResetPlaceHolder()
 void ApplyDarkMode()
 {
 	uiBackGroundColor = 0x262626;
+	uiMenuItemColor   = 0x1a1a1a;
+	uiTextFontColor   = 0xFFFFFF;
 }

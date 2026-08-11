@@ -236,9 +236,12 @@ void DisplayPopupMenu(int nMenu)
 		RECT clientRect;
 		RECT buttonRect;
 
-		HBRUSH hbrRed = CreateSolidBrush(RGB(0, 255, 0));
+		COLORREF color = RGB((uiMenuItemColor >> 16) & 0xFF,     // R
+                      		 (uiMenuItemColor >> 8) & 0xFF,      // G
+                      		  uiMenuItemColor & 0xFF);           // B
+		HBRUSH hbrColor = CreateSolidBrush(color);
 
-		ApplyMenuBackground(hPopupMenu, hbrRed);
+		ApplyMenuBackground(hPopupMenu, hbrColor);
 
 		nLastMenu         = nMenu;
 		nRecursions       = 0;

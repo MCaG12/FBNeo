@@ -381,6 +381,9 @@ extern int nIconsSize, nIconsSizeXY, nIconsYDiff;
 extern bool bGameInfoOpen;
 extern bool bIconsByHardwares;
 extern UINT uiBackGroundColor;
+extern UINT uiMenuItemColor;
+extern UINT uiSelectedMenuItemColor;
+extern UINT uiTextFontColor;
 
 extern HICON* pIconsCache;
 

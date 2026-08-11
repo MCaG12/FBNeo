@@ -600,18 +600,24 @@ static LRESULT CALLBACK ScrnProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lPar
 
 				COLORREF clr;
 				if (bSelected)
-					clr = RGB(180, 0, 0);   // hover
+					clr = RGB((uiSelectedMenuItemColor >> 16) & 0xFF,   // R
+                      		  (uiSelectedMenuItemColor >> 8) & 0xFF,    // G
+                      		   uiSelectedMenuItemColor & 0xFF);         // B
 				else if (bChecked)
-					clr = RGB(120, 0, 0);   // checked/active item, idle
+					clr = RGB((uiSelectedMenuItemColor >> 16) & 0xFF,   // R
+                      		  (uiSelectedMenuItemColor >> 8) & 0xFF,    // G
+                      		   uiSelectedMenuItemColor & 0xFF);         // B
 				else
-					clr = RGB(255, 0, 0);   // normal idle
+					clr = RGB((uiMenuItemColor >> 16) & 0xFF,   // R
+                      		  (uiMenuItemColor >> 8) & 0xFF,    // G
+                      		   uiMenuItemColor & 0xFF);         // B
 
 				HBRUSH hbr = CreateSolidBrush(clr);
 				FillRect(pdis->hDC, &pdis->rcItem, hbr);
 				DeleteObject(hbr);
 
 				SetBkMode(pdis->hDC, TRANSPARENT);
-				SetTextColor(pdis->hDC, RGB(255,255,255));
+				SetTextColor(pdis->hDC, (COLORREF) uiTextFontColor);          
 
 				TCHAR* pszText = (TCHAR*)pdis->itemData;
 				if (pszText) {
@@ -4393,7 +4399,7 @@ int ScrnInit()
 			rebarBandInfo.cxMinChild	= 100;
 			rebarBandInfo.cyMinChild	= ((SendMessage(hMenubar, TB_GETBUTTONSIZE, 0, 0)) >> 16) + 1;
 			rebarBandInfo.cx			= rect.right - rect.left;
-		    rebarBandInfo.clrFore    = RGB(0, 0, 0);
+		    rebarBandInfo.clrFore    = (COLORREF) uiTextFontColor;
     		rebarBandInfo.clrBack    = uiBackGroundColor;
 
 			SendMessage(hRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rebarBandInfo);
