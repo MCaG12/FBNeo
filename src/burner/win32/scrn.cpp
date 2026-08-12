@@ -2798,9 +2798,16 @@ static void OnCommand(HWND /*hDlg*/, int id, HWND /*hwndCtl*/, UINT codeNotify)
 			ResetPlaceHolder();
 			POST_INITIALISE_MESSAGE;
 			break;
+		
+		case MENU_DEFAULT_LIGHT_MODE:
+ 			nUiColorTheme = 0;
+			UpdateUiColorMode(nUiColorTheme);
+			POST_INITIALISE_MESSAGE;
+			break;
 
 		case MENU_DEFAULT_DARK_MODE:
-			ApplyDarkMode();
+			nUiColorTheme = 1;
+			UpdateUiColorMode(nUiColorTheme);
 			POST_INITIALISE_MESSAGE;
 			break;	
 

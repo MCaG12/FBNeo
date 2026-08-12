@@ -1327,6 +1327,8 @@ void MenuUpdate()
 	CheckMenuItem(hMenu, MENU_ASSEMBLYCORE, bBurnUseASMCPUEmulation ? MF_CHECKED : MF_UNCHECKED);
 #endif
 
+	UpdateUiColorMode(nUiColorTheme);
+
 	var = MENU_ICONS_SIZE_16;
 	switch (nIconsSize) {
 		case ICON_16x16: var = MENU_ICONS_SIZE_16;	break;

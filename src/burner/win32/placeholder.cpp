@@ -4,6 +4,7 @@ UINT uiBackGroundColor = 0xFFFFFF;
 UINT uiMenuItemColor   = 0xf4f4f4;
 UINT uiSelectedMenuItemColor = 0x9fc5e8;
 UINT uiTextFontColor = 0x000000;
+UINT nUiColorTheme = 0;
 
 static void MakeOfn()
 {
@@ -45,6 +46,29 @@ int SelectPlaceHolder()
 void ResetPlaceHolder()
 {
 	szPlaceHolder[0] = _T('\0');
+}
+
+void UpdateUiColorMode(UINT uiColorMode)
+{
+	if(uiColorMode == 0)
+	{
+		uiBackGroundColor = 0xFFFFFF;
+		uiMenuItemColor   = 0xf4f4f4;
+		uiTextFontColor = 0x000000;
+	}
+	else
+	{
+		uiBackGroundColor = 0x262626;
+		uiMenuItemColor   = 0x1a1a1a;
+		uiTextFontColor   = 0xFFFFFF;
+	}
+}
+
+void ApplyLightMode()
+{
+	uiBackGroundColor = 0xFFFFFF;
+	uiMenuItemColor   = 0xf4f4f4;
+	uiTextFontColor = 0x000000;
 }
 
 void ApplyDarkMode()
