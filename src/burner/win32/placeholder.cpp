@@ -52,15 +52,11 @@ void UpdateUiColorMode(UINT uiColorMode)
 {
 	if(uiColorMode == 0)
 	{
-		uiBackGroundColor = 0xFFFFFF;
-		uiMenuItemColor   = 0xf4f4f4;
-		uiTextFontColor = 0x000000;
+		ApplyLightMode();
 	}
 	else
 	{
-		uiBackGroundColor = 0x262626;
-		uiMenuItemColor   = 0x1a1a1a;
-		uiTextFontColor   = 0xFFFFFF;
+		ApplyDarkMode();
 	}
 }
 
