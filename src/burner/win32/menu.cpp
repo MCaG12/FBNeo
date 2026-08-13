@@ -1,6 +1,7 @@
 // Menu handling
 
 #include "burner.h"
+#define TBCDRF_USECDCOLORS      0x00800000 // adding constant so NM_CUSTOMDRAW doesnt get ignored
 
 #ifdef _MSC_VER
 // #include <winable.h>
@@ -319,6 +320,20 @@ int OnNotify(HWND, int, NMHDR* lpnmhdr)		// HWND hwnd, int id, NMHDR* lpnmhdr
 				nLastMenu = ((TBNOTIFY*)lpnmhdr)->iItem - MENU_MENU_0;
 			}
 			return TBDDRET_DEFAULT;
+		}
+
+		//adds a custom draw event to change the text font color in the button bar
+		case NM_CUSTOMDRAW: {
+			LPNMTBCUSTOMDRAW lpnmtbcd = (LPNMTBCUSTOMDRAW)lpnmhdr;
+			switch (lpnmtbcd->nmcd.dwDrawStage) {
+				case CDDS_PREPAINT:
+					return CDRF_NOTIFYITEMDRAW;
+
+				case CDDS_ITEMPREPAINT:
+					lpnmtbcd->clrText = (COLORREF) uiTextFontColor; 
+					return TBCDRF_USECDCOLORS;
+			}
+			return CDRF_DODEFAULT;
 		}
 
 		case TBN_HOTITEMCHANGE: {

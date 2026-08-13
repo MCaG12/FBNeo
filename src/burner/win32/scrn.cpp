@@ -4354,8 +4354,6 @@ int ScrnInit()
 		0, 0, 0, 0,									   			// size of window
 		NULL, NULL, hAppInst, NULL);
 
-	SetClassLongPtr(hScrnWnd, GCLP_HBRBACKGROUND, (LONG_PTR)(CreateSolidBrush(RGB(0, 255, 0))));	
-	//hScrnWnd.hbrBackground = (HBRUSH)(CreateSolidBrush(RGB(0, 255, 0)));	
 
 	if (hScrnWnd == NULL) {
 		ScrnExit();
@@ -4406,7 +4404,6 @@ int ScrnInit()
 			rebarBandInfo.cxMinChild	= 100;
 			rebarBandInfo.cyMinChild	= ((SendMessage(hMenubar, TB_GETBUTTONSIZE, 0, 0)) >> 16) + 1;
 			rebarBandInfo.cx			= rect.right - rect.left;
-		    rebarBandInfo.clrFore    = (COLORREF) uiTextFontColor;
     		rebarBandInfo.clrBack    = uiBackGroundColor;
 
 			SendMessage(hRebar, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rebarBandInfo);
