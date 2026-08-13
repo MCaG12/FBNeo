@@ -513,7 +513,6 @@ int ConfigAppLoad()
 		DRV(nBurnDrvSelect[5]);
 
 		VAR(bNeoCDListScanSub);
-//		VAR(bNeoCDListScanOnlyISO);
 		
 		VAR(bRDListScanSub);
 
@@ -929,7 +928,6 @@ int ConfigAppSave()
 
 	_ftprintf(h, _T("\n// Neo Geo CD Load Game Dialog options\n"));
 	VAR(bNeoCDListScanSub);
-//	VAR(bNeoCDListScanOnlyISO);
 
 	_ftprintf(h, _T("\n// RomData Load Game Dialog options\n"));
 	VAR(bRDListScanSub);
